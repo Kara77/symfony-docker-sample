@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="mx-auto my-4 px-2">
+        <h1 class="text-2xl font-bold mb-5">Liste des offres d'emploi à Bordeaux</h1>
+        {% if errorMessage is not null %}
+            <div class="bg-red-100 text-red-800 py-2 px-4 mb-2">{{ errorMessage }}</div>
+        {% endif %}
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border">
+                <thead>
+                <tr class="bg-blue-500 text-white">
+                    <th class="w-1/4 py-2 px-4 border">Titre</th>
+                    <th class="w-1/2 py-2 px-4 border">Description</th>
+                    <th class="w-1/8 py-2 px-4 border">Lieu</th>
+                    <th class="w-1/8 py-2 px-4 border">Type de contrat</th>
+                    <th class="w-1/6 py-2 px-4 border">Entreprise</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for offer in offers %}
+                    <tr class="{{ loop.index is odd ? 'bg-gray-100' : 'bg-white' }} hover:bg-blue-100 cursor-pointer">
+                        <td class="py-2 px-4 border">{{ offer.title | default('Non précisé') | raw }}</td>
+                        <td class="py-2 px-4 border">{{ offer.description | default('Non précisé') | raw }}</td>
+                        <td class="py-2 px-4 border" style="white-space: pre-line;">{{ (offer.region ?: '') ~ (offer.city ? '\n' ~ offer.city : '') }}</td>
+                        <td class="py-2 px-4 border">{{ offer.contractType | default('Non précisé') | join(', ') | raw }}</td>
+                        <td class="py-2 px-4 border">{{ offer.company | default('Non précisée') | raw }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination mt-2">
+            {% if pagination.page > 1 %}
+                <a href="{{ path('job', {'page': pagination.page - 1}) }}" class="btn btn-gray">&laquo; Précédent</a>
+            {% endif %}
+
+            <span class="mx-2">Page {{ pagination.page }} sur {{ pagination.maxPage }}</span>
+
+            {% if pagination.page < pagination.maxPage %}
+                <a href="{{ path('job', {'page': pagination.page + 1}) }}" class="btn btn-gray">Suivant &raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
